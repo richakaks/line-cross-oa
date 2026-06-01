@@ -47,11 +47,11 @@ async function getDisplayName(token, userId) {
   }
 }
 
-function searchOtherAccounts(displayName, sourceAccountName) {
+function searchOtherAccounts(userId, sourceAccountName) {
   const matches = [];
   for (const [name, data] of Object.entries(contacts)) {
     if (name === sourceAccountName) continue;
-    if (data.some(c => c.displayName.toLowerCase() === displayName.toLowerCase())) {
+    if (data.some(c => c.userId === userId)) {
       matches.push(name);
     }
   }
@@ -103,9 +103,11 @@ accounts.forEach(account => {
         saveContacts(contacts);
         console.log(`Captured User ID: ${userId} for ${displayName} on ${account.name}`);
         console.log(`[${account.name}] New contact logged: ${displayName}`);
+      } else {
+        console.log(`[${account.name}] Existing contact messaged: ${displayName}`);
       }
 
-      const matches = searchOtherAccounts(displayName, account.name);
+      const matches = searchOtherAccounts(userId, account.name);
 
       if (matches.length > 0) {
         console.log(`DUPLICATE DETECTED: "${displayName}" on ${account.name} also exists on: ${matches.join(', ')}`);
